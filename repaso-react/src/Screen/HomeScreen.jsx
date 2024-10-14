@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useWorkspaces } from '../hooks/useWorkspaces'
 
 const HomeScreen = () => {
     //Los estados nos permiten recargar componentes
@@ -18,47 +19,18 @@ const HomeScreen = () => {
         setNombreUsuario(evento.target.value)
     }
 
-    const workspaces = [
-        {
-            name: 'Workspace UTN',
-            id: 0
-        },
-        {
-            name: 'Clases de Next.js',
-            id: 1
-        },
-        {
-            name: 'Clases de piano',
-            id: 2
-        },
-        {
-            name: 'Juegos',
-            id: 3
-        }
-    ]
+    
     /* 
     Si el usuario escribe en el input workspace_name un valor igual al nombre de alguno de los workspaces existente, debemos mostrar un error en un span que diga, 'nombre en uso'
     */
-
-    const [workspace_name, set_workspace_name] = useState('')
-    const [errorWorkspaceRepeated, setErrorWorkspaceRepeated] = useState(false)
-    const handleChangeWorkspaceName = (evento) => {
-        set_workspace_name(evento.target.value)
-    }
-
-    const isInUseWorkspaceName = (workspace_name, workspaces) => {
-        return workspaces.some(workspace => workspace.name === workspace_name)
-    }
-
-
-    //Los efectos recargan funcionalidades
-    useEffect(
-        () => {
-            //Esta es la accion que se recargara
-            setErrorWorkspaceRepeated(isInUseWorkspaceName(workspace_name, workspaces))
-        },
-        [workspace_name]
-    )
+    const {
+        workspaces,
+        workspace_name,
+        errorWorkspaceRepeated,
+        handleChangeWorkspaceName,
+        handleSubmitWorkspace
+    } = useWorkspaces()
+   
     return (
         <>
             <h1>Afip</h1>
@@ -68,7 +40,7 @@ const HomeScreen = () => {
                 <input id='nombre' name='nombre' value={nombreUsuario} onChange={handleChangeInputName} />
             </form>
 
-            <form>
+            <form onSubmit={handleSubmitWorkspace}>
                 <h2>Crear espacio de trabajo</h2>
                 <div>
                     <label htmlFor="workspace_name">Ingrese el nombre del espacio</label>
