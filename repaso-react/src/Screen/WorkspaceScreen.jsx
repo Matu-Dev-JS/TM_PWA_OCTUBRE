@@ -20,6 +20,7 @@ const WorkspaceScreen = () => {
         crearChannel,
         crearMessage
     } =useWorkspace(workspace_id, channel_id)
+    let nombre 
     return (
         <div>
             <h1>{workspace_seleccionado.name}</h1>
