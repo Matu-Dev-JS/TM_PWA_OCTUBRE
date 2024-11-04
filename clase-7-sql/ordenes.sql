@@ -1,0 +1,8 @@
+CREATE TABLE ORDENES (
+    id INT AUTO_INCREMENT PRIMARY KEY, 
+    usuario_id INT(11) NOT NULL, 
+    estado VARCHAR(10) NOT NULL DEFAULT 'pendiente',
+    total DECIMAL(10.2) NOT NULL, 
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
