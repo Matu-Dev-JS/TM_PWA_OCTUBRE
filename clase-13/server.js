@@ -49,10 +49,13 @@ const products = [
     },
 ]
 
-app.get('/products', (req, res) => {
+app.get('/products', (req, response) => {
 
     //queremos obtener el query param 'marca'
     const marca = req.query.marca
+    const min_price = req.query.min_price
+    const max_price = req.query.max_price
+
 
     let productos_filtrados = products
     //en caso de que haya marca filtrar
@@ -61,6 +64,15 @@ app.get('/products', (req, res) => {
         //logica de filtro
         productos_filtrados = productos_filtrados.filter(producto => producto.marca === marca)
     }
+    if(min_price){
+        productos_filtrados = productos_filtrados.filter(producto => producto.price >= min_price)
+    }
+    if(max_price){
+        productos_filtrados = productos_filtrados.filter(producto => producto.price <= max_price)
+    }
+
+
+
     //TAREA
     //2do ejercicio
     //Aplicar un filtro de precio
@@ -70,12 +82,15 @@ app.get('/products', (req, res) => {
     //OPCIONAL: En caso de que el precio min sea mayor al precio maximo entonces responder con error
 
 
-    console.log(marca)
+
     //en caso de que haya marca (osea si se selecciono una marca) devolver solo los productos de esa marca
 
     //Si hay marca, filtrar por marca sino hay marca entonces no filtrar
 
-    res.json(
+
+
+
+    response.json(
         {
             status: 200,
             message: "Productos obtenidos",
@@ -88,6 +103,8 @@ app.get('/products', (req, res) => {
 })
 
 //products.filter(prodcut => prodcut.marca == )
+
+
 
 app.listen(PORT, () =>{
     console.log(`Aplicacion escuchandose en el puerto ${PORT}`)
