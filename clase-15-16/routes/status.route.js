@@ -18,7 +18,7 @@ const middlewareDePrueba = (req, res, next) =>{
     if(numero_random > 0.5){
         //Guardo en los headers de mi consulta un dato
         req.headers.suerte = 'El usuario tiene suerte'
-
+        next()
     }
     else{
         res.sendStatus(500)
