@@ -1,5 +1,10 @@
 //Responsabilidad de responder
 import filesystem from 'fs'
+import jwt from 'jsonwebtoken'
+import ENVIROMENT from '../config/enviroment.js'
+
+
+
 export const registerController =  async (request, response) => {
     try {
         const { name, email, password } = request.body
@@ -99,6 +104,18 @@ export const loginController =  async (req, res) => {
             });
         }
 
+
+        //Quiero transformar al user a un token
+        const user_info =  {
+            id: user_found.id,
+            name: user_found.name,
+            email: user_found.email,
+        }
+
+        const access_token = jwt.sign(user_info, ENVIROMENT.SECRET_KEY_JWT)
+
+
+
         return res.json({
             ok: true,
             status: 200,
@@ -109,6 +126,7 @@ export const loginController =  async (req, res) => {
                     name: user_found.name,
                     email: user_found.email,
                 },
+                access_token: access_token
             },
         });
     }

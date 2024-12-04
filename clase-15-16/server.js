@@ -1,6 +1,14 @@
 import express from 'express'
+import ENVIROMENT from './config/enviroment.js'
+
+
+
+
 const app = express()
-const PORT = 3000
+const PORT = ENVIROMENT.PORT 
+
+
+
 
 app.use(express.json())
 
@@ -20,6 +28,7 @@ app.use(express.json())
 
 import statusRoute from './routes/status.route.js'
 import authRouter from './routes/auth.route.js'
+
 
 //Delegamos el flujo de consultas a /api/status al enrutador de status
 app.use('/api/status', statusRoute)
