@@ -3,8 +3,10 @@
 //la configuracion del enrutador de status
 
 import express from 'express'
-import jwt from 'jsonwebtoken'
+
 import ENVIROMENT from '../config/enviroment.js'
+import { authMiddleware } from '../middlewares/auth.middleware.js'
+import { middlewareDePrueba } from '../middlewares/luck.middleware.js'
 const statusRoute = express.Router()
 
 
@@ -12,27 +14,14 @@ statusRoute.get('/ping', (request, response)=>{
     response.sendStatus(200)
 })
 
-const middlewareDePrueba = (req, res, next) =>{
-    const numero_random = Math.random()
-    console.log('Numero random:', numero_random)
-    if(numero_random > 0.5){
-        //Guardo en los headers de mi consulta un dato
-        req.headers.suerte = 'El usuario tiene suerte'
-        next()
-    }
-    else{
-        res.sendStatus(500)
-    }
-}
+
+
+
 
 //Imaginemos que esta operacion solo la puede hacer alguien que este logueado
-statusRoute.get('/protected/ping', middlewareDePrueba,  (request, response) =>{
+statusRoute.get('/protected/ping', middlewareDePrueba, authMiddleware,  (request, response) =>{
     try{
-        console.log(request.headers.suerte)
-        const access_token = request.headers.authorization.split(' ')[1]
-
-        const user_info = jwt.verify(access_token, ENVIROMENT.SECRET_KEY_JWT)
-    
+        console.log(request.headers.user)
         response.sendStatus(200)
     }
     catch(error){
@@ -55,3 +44,5 @@ statusRoute.get('/datos-bancarios', (request, response) =>{
     }
 })
 export default statusRoute
+
+
