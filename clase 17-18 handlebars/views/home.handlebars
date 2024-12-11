@@ -1,0 +1,10 @@
+<h1>{{this.data.title}}</h1>
+<h2>Estamos en el layout {{this.layout}}</h2>
+{{{this.data.html}}}
+{{#each this.data.workspaces}}
+    <li>
+        <h2>{{this.name}} </h2>
+        <a href="/workspaces/{{this.id}}">Entrar a workspace</a>
+    </li>
+{{/each}}
+<a href="/workspaces/new">Crear workspace</a>

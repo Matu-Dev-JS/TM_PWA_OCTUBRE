@@ -1,0 +1,12 @@
+<h1>Crear workspace</h1>
+<form action="/workspaces/new" method="POST">
+    <div>
+        <label for="name">Nombre del workspace</label>
+        <input type="text" name="workspace_name" id="workspace_name">
+        {{#if this.data.errors.workspace_name}}
+            <span style="color: red;">{{this.data.errors.workspace_name}}</span>
+        {{/if}}
+    </div>
+   
+    <button type="submit">Crear</button>
+</form>
