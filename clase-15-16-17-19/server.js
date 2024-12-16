@@ -1,6 +1,8 @@
 import express from 'express'
 import ENVIROMENT from './config/enviroment.js'
-
+import mongoose from './config/mongoDB.config.js'
+import connectToMongoDB from './config/mongoDB.config.js'
+import User from './models/User.model.js'
 
 
 

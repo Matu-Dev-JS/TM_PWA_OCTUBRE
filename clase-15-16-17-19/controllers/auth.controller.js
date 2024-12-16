@@ -2,8 +2,31 @@
 import filesystem from 'fs'
 import jwt from 'jsonwebtoken'
 import ENVIROMENT from '../config/enviroment.js'
+import User from '../models/User.model.js'
 
 
+//Buscar por email
+const findUserByEmail = async (email) =>{
+    const userFound = await User.findOne({email: email})
+    return userFound
+}
+
+
+//Crear usuario
+
+const createUser = async ({username, email, password, verificationToken}) =>{
+    const nuevo_usuario = new User({
+        username,
+        email, 
+        password,
+        verificationToken,
+        modifiedAt: null
+    })
+    return nuevo_usuario.save()
+}
+
+
+//Modificar/Migrar el controlador de registro para usar MongoDB (Ya no mas filesystem)
 
 export const registerController =  async (request, response) => {
     try {
@@ -11,28 +34,26 @@ export const registerController =  async (request, response) => {
 
         //validamos estos datos (Queda de tarea)
 
-        const users_info = JSON.parse(await filesystem.promises.readFile(
-            './data/users.json',
-            { encoding: 'utf-8' }
-        ))
+        const user_found = await findUserByEmail(email)
 
         //Validar que el usuario con ese email sea nuevo (es decir no exista)
-
-
-        users_info.id_counter = users_info.id_counter + 1
-        const new_user = {
-            name,
-            email,
-            password,
-            id: users_info.id_counter
+        if(user_found){
+            //Error de usuario ya encontrado
+            return response.json({
+                ok: false,
+                status: 400,
+                message: 'Email user already exists',
+            })
         }
-        users_info.users.push(new_user)
-        await filesystem.promises.writeFile('./data/users.json', JSON.stringify(users_info))
+        const verificationToken = jwt.sign({email}, ENVIROMENT.SECRET_KEY_JWT, {expiresIn: '1d'})
+        const new_user = await createUser({username: name, email, password, verificationToken})
         response.json({
             ok: true,
             status: 201,
             message: 'User registered successfully',
-            data: {}
+            data: {
+                
+            }
         })
     }
     catch (error) {
