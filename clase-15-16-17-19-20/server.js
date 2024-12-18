@@ -30,6 +30,7 @@ app.use(express.json())
 
 import statusRoute from './routes/status.route.js'
 import authRouter from './routes/auth.route.js'
+import { sendMail } from './utils/mail.util.js'
 
 
 //Delegamos el flujo de consultas a /api/status al enrutador de status
@@ -40,3 +41,11 @@ app.use('/api/auth', authRouter)
 app.listen(PORT, () =>{
     console.log(`El servidor se esta ejecutando en http://localhost:${PORT}`)
 })
+
+/* 
+sendMail({
+    to: 'mati.dev.gimenez@gmail.com', 
+    subject: 'Prueba de envio de mail', 
+    html: '<h1>Prueba de envio de mail</h1>'
+}) 
+*/

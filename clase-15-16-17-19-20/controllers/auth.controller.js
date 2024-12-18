@@ -3,6 +3,13 @@ import filesystem from 'fs'
 import jwt from 'jsonwebtoken'
 import ENVIROMENT from '../config/enviroment.js'
 import User from '../models/User.model.js'
+import { sendMail } from '../utils/mail.util.js'
+import bcrypt from 'bcrypt'
+
+
+const QUERY = {
+    VERIFICATION_TOKEN: 'verification_token'
+}
 
 
 //Buscar por email
@@ -46,7 +53,30 @@ export const registerController =  async (request, response) => {
             })
         }
         const verificationToken = jwt.sign({email}, ENVIROMENT.SECRET_KEY_JWT, {expiresIn: '1d'})
-        const new_user = await createUser({username: name, email, password, verificationToken})
+        await sendMail(
+            {
+                to: email, 
+                subject: 'Valida tu mail',
+                html: `
+                    <h1 >Debes validar tu mail!</h1>
+                    <p>Da click en el enlace de 'verificar' para poder validar tu mail</p>
+                    <a 
+                        href='http://localhost:${ENVIROMENT.PORT}/api/auth/verify-email?${QUERY.VERIFICATION_TOKEN}=${verificationToken}'
+                    >
+                        Verificar
+                    </a>
+                `
+            }
+        )
+        const password_hash = await bcrypt.hash(password, 10)
+        const new_user = await createUser(
+            {
+                username: name, 
+                email, 
+                password: password_hash, 
+                verificationToken
+            }
+        )
         response.json({
             ok: true,
             status: 201,
@@ -62,6 +92,53 @@ export const registerController =  async (request, response) => {
             ok: false,
             status: 500,
             message: 'Server error'
+        })
+    }
+}
+
+
+export const verifyEmailController = async (req, res) =>{
+    try{
+        const {[QUERY.VERIFICATION_TOKEN]: verification_token} = req.query
+        if(!verification_token){
+            return res.send(`
+                <h1>Falta el token de verificacion!</h1>
+                <p>Status: 400</p>
+                `
+            )
+        }
+        const payload = jwt.verify(verification_token, ENVIROMENT.SECRET_KEY_JWT)
+        const user_to_verify = await findUserByEmail(payload.email)
+        if(!user_to_verify){
+            return res.send(`
+                <h1>Usuario no encontrado!</h1>
+                <p>Status: 404</p>
+                `
+            )
+        }
+        if(user_to_verify.verificationToken !== verification_token){
+            return res.send(
+                `
+                <h1>Token invalido</h1>
+                <p>Status: 400</p>
+                `
+            )
+        }
+        user_to_verify.verified = true
+        await user_to_verify.save()
+        return res.send(
+            `
+            <h1>Email verificado</h1>
+            <a>Login aqui</a>
+            `
+        )
+    }
+    catch(error){
+        console.log(error)
+        res.json({
+            status:500,
+            message: "Internal server error",
+            ok: false
         })
     }
 }
@@ -99,14 +176,7 @@ export const loginController =  async (req, res) => {
             });
         }
 
-        const users_info = JSON.parse(
-            await filesystem.promises.readFile("./data/users.json", {
-                encoding: "utf-8",
-            })
-        );
-        const user_found = users_info.users.find(
-            (user) => user.email === email
-        );
+        const user_found = await findUserByEmail(email)
 
         if (!user_found) {
 
@@ -116,8 +186,8 @@ export const loginController =  async (req, res) => {
                 message: "there is no user with this email",
             });
         }
-
-        if (user_found.password !== password) {
+        const is_same_password = await bcrypt.compare(password, user_found.password)
+        if (!is_same_password) {
             return res.json({
                 ok: false,
                 status: 400,
