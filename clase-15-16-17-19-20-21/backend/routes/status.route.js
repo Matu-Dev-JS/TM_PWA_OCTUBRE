@@ -11,7 +11,11 @@ const statusRoute = express.Router()
 
 
 statusRoute.get('/ping', (request, response)=>{
-    response.sendStatus(200)
+    response.json({
+        status:200,
+        ok: true,
+        message: "Pong"
+    })
 })
 
 

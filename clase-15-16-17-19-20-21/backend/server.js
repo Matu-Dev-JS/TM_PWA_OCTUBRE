@@ -3,7 +3,7 @@ import ENVIROMENT from './config/enviroment.js'
 import mongoose from './config/mongoDB.config.js'
 import connectToMongoDB from './config/mongoDB.config.js'
 import User from './models/User.model.js'
-
+import cors from 'cors'
 
 
 const app = express()
@@ -11,6 +11,12 @@ const PORT = ENVIROMENT.PORT
 
 
 
+//Cross-Origin Resource Sharing
+app.use(
+    cors({
+        origin: 'http://localhost:5173'
+    })
+)
 
 app.use(express.json())
 
