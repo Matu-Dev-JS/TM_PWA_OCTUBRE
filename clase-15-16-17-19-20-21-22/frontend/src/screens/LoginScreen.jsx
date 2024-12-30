@@ -78,6 +78,8 @@ const LoginScreen = () => {
                 </button>
                 
                 <span>Aun no tienes cuenta? <Link to={'/register'}>Registrate</Link></span>
+                <br/>
+                <Link to={'/forgot-password'}>Olvide mi contraseña</Link>
             </form>
         </div>
     )

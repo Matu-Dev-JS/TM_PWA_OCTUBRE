@@ -216,3 +216,71 @@ export const loginController =  async (req, res) => {
     }
     
 }
+
+export const forgotPasswordController = async (req, res) =>{
+    try{
+        console.log(req.body)
+        const {email} = req.body
+        const user_found = await User.findOne({email})
+        if(!user_found){
+            return res.json({
+                ok: false,
+                status: 404,
+                message: 'User not found'
+            })
+        }
+        else{
+            const reset_token = jwt.sign({email}, ENVIROMENT.SECRET_KEY_JWT, {expiresIn: '1d'})
+            const reset_url = `${ENVIROMENT.URL_FRONTEND}/reset-password?reset_token=${reset_token}`
+            await sendMail({
+                to: email,
+                subject: 'Restablecer contraseña',
+                html: `
+                    <h1>Restablecer contraseña</h1>
+                    <p>Haz click en el enlace de abajo para restablecer tu contraseña</p>
+                    <a href='${reset_url}'>Restablecer contraseña</a>
+                `
+            })
+            return res.json({
+                ok: true,
+                status: 200,
+                message: 'Email sent'
+            })
+        }
+    }
+    catch(error){
+        console.error(error)
+        return res.json({
+            ok:false,
+            message: "Internal server error",
+            status: 500,
+        })
+    }
+} 
+
+export const resetPasswordController = async (req, res) =>{
+    try{
+        const {reset_token} = req.query
+        const {password} = req.body
+
+        const {email} = jwt.verify(reset_token, ENVIROMENT.SECRET_KEY_JWT)
+        const user_found = await User.findOne({email})
+        const password_hash = await bcrypt.hash(password, 10)
+
+        user_found.password = password_hash
+        await user_found.save()
+        return res.json({
+            ok: true,
+            status: 200, 
+            message: 'Password changed'
+        })
+    }
+    catch(error){
+        console.error(error)
+        return res.json({
+            ok:false,
+            message: "Internal server error",
+            status: 500,
+        })
+    }
+}  

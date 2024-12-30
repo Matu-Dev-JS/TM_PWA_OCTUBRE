@@ -8,3 +8,6 @@ En caso de no existir devuelven 404
 
 FRONTEND:
 Conectar el endpoint POST /api/auth/resend-verify-email con la pantalla de /error?error=RESEND_EMAIL_VERIFY_TOKEN
+
+Opcional:
+Hilen fino sobre los posibles errores actuales del frontend
