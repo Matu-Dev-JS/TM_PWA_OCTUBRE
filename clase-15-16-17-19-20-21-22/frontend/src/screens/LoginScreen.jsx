@@ -5,6 +5,10 @@ import { Link } from 'react-router-dom'
 
 const LoginScreen = () => {
     const {form_state, handleChangeInput} = useForm({email:'', password: ''})
+    const url = new URLSearchParams(window.location.search)
+    if(url.get('verified')){
+        alert('Cuenta verificada')
+    }
     const handleSubmitForm = async (event) =>{
         try{
             event.preventDefault()

@@ -102,37 +102,20 @@ export const verifyEmailController = async (req, res) =>{
     try{
         const {[QUERY.VERIFICATION_TOKEN]: verification_token} = req.query
         if(!verification_token){
-            return res.send(`
-                <h1>Falta el token de verificacion!</h1>
-                <p>Status: 400</p>
-                `
-            )
+            return res.redirect(`${ENVIROMENT.URL_FRONTEND}/error?error=REQUEST_EMAIL_VERIFY_TOKEN`)
+
         }
         const payload = jwt.verify(verification_token, ENVIROMENT.SECRET_KEY_JWT)
         const user_to_verify = await findUserByEmail(payload.email)
         if(!user_to_verify){
-            return res.send(`
-                <h1>Usuario no encontrado!</h1>
-                <p>Status: 404</p>
-                `
-            )
+            return res.redirect(`${ENVIROMENT.URL_FRONTEND}/error?error=REQUEST_EMAIL_VERIFY_TOKEN`)
         }
         if(user_to_verify.verificationToken !== verification_token){
-            return res.send(
-                `
-                <h1>Token invalido</h1>
-                <p>Status: 400</p>
-                `
-            )
+            return res.redirect(`${ENVIROMENT.URL_FRONTEND}/error?error=RESEND_VERIFY_TOKEN`)
         }
         user_to_verify.verified = true
         await user_to_verify.save()
-        return res.send(
-            `
-            <h1>Email verificado</h1>
-            <a>Login aqui</a>
-            `
-        )
+        return res.redirect(`${ENVIROMENT.URL_FRONTEND}/login?verified=true`)
     }
     catch(error){
         console.log(error)

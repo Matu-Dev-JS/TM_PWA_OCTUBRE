@@ -8,7 +8,8 @@ const ENVIROMENT = {
     PORT: process.env.PORT || 3000,
     SECRET_KEY_JWT: process.env.JWT_SECRET,
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
-    EMAIL_USERNAME: process.env.EMAIL_USERNAME
+    EMAIL_USERNAME: process.env.EMAIL_USERNAME,
+    URL_FRONTEND: `http://localhost:5173`
 }
 
 export default ENVIROMENT

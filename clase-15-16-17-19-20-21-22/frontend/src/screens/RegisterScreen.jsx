@@ -4,6 +4,7 @@ import ENVIROMENT from '../utils/constants/enviroment'
 
 const RegisterScreen = () => {
 	const { form_state, handleChangeInput } = useForm({ username: "", email: "", password: "" })
+	
 
 	const handleSubmitForm = async (event) => {
 		event.preventDefault()
