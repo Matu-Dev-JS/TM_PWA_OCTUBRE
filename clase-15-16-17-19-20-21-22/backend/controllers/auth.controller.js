@@ -37,7 +37,8 @@ const createUser = async ({username, email, password, verificationToken}) =>{
 
 export const registerController =  async (request, response) => {
     try {
-        const { name, email, password } = request.body
+        console.log(request.body)
+        const { username, email, password } = request.body
 
         //validamos estos datos (Queda de tarea)
 
@@ -71,7 +72,7 @@ export const registerController =  async (request, response) => {
         const password_hash = await bcrypt.hash(password, 10)
         const new_user = await createUser(
             {
-                username: name, 
+                username: username, 
                 email, 
                 password: password_hash, 
                 verificationToken
@@ -145,6 +146,7 @@ export const verifyEmailController = async (req, res) =>{
 
 export const loginController =  async (req, res) => {
     try {
+        console.log(req.body)
         const { email, password } = req.body;
         const errors = {
             email: null,

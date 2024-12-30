@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import useForm from '../hooks/useForm'
 import ENVIROMENT from '../utils/constants/enviroment'
+import { Link } from 'react-router-dom'
 
 const LoginScreen = () => {
     const {form_state, handleChangeInput} = useForm({email:'', password: ''})
@@ -71,6 +72,8 @@ const LoginScreen = () => {
                     }>
                     Iniciar sesion
                 </button>
+                
+                <span>Aun no tienes cuenta? <Link to={'/register'}>Registrate</Link></span>
             </form>
         </div>
     )

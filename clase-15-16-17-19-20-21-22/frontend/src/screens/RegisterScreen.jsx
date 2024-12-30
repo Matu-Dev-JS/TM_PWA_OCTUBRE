@@ -43,7 +43,7 @@ const RegisterScreen = () => {
 
 	return (
 		<div>
-			RegisterScreen
+			<h1>Registro</h1>
 
 			<form onSubmit={handleSubmitForm}>
 
