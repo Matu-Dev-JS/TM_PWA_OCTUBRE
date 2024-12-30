@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import useForm from '../hooks/useForm'
 import ENVIROMENT from '../utils/constants/enviroment'
 
 const LoginScreen = () => {
-    const {form_state, handleChangeInput} = useForm({email:'pepe', password: ''})
+    const {form_state, handleChangeInput} = useForm({email:'', password: ''})
     const handleSubmitForm = async (event) =>{
         try{
             event.preventDefault()
@@ -32,6 +32,8 @@ const LoginScreen = () => {
     form_state.email && form_state.email.length > 30 && errores.email.push("El limite de caracteres es 30") 
     form_state.email && form_state.email.length < 5 && errores.email.push("El minimo de caracteres es 5")
     form_state.password && form_state.password.length < 5 && errores.password.push("El minimo de caracteres es 5")
+
+
     return (
         <div>
             <h1>Login</h1>
