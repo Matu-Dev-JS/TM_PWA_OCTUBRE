@@ -8,7 +8,7 @@ export const authMiddleware = (request, response, next) => {
         //Cuando hacemos el verify ademas de verificar la firma del token tambien transformamos el token en objeto nuevamente
         const user_info = jwt.verify(access_token, ENVIROMENT.SECRET_KEY_JWT)
         
-        request.headers.user = user_info
+        request.user = user_info
         return next()
     }
     catch(error){

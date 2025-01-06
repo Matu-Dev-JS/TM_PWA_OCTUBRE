@@ -6,7 +6,7 @@ import LoginScreen from './screens/LoginScreen'
 import ErrorScreen from './screens/ErrorScreen'
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen'
 import ResetPasswordScreen from './screens/ResetPasswordScreen'
-
+import './App.css'
 
 
 

@@ -40,10 +40,11 @@ const LoginScreen = () => {
 
 
     return (
-        <div>
-            <h1>Login</h1>
-            <form onSubmit={handleSubmitForm}>
-                <div>
+        <main className='auth-screen'>
+            
+            <form onSubmit={handleSubmitForm} className='auth-form'>
+                <h1 className='title'>Login</h1>
+                <div className='input-container'>
                     <label htmlFor='email'>Ingresa tu email:</label>
                     <input 
                         name='email' 
@@ -56,7 +57,7 @@ const LoginScreen = () => {
                         errores.email.map((error, index) => <p key={index} style={{color: 'red'}}>{error}</p>)
                     }
                 </div>
-                <div>
+                <div className='input-container'>
                     <label htmlFor='password'>Ingresa tu contraseña:</label>
                     <input 
                         name='password' 
@@ -78,10 +79,9 @@ const LoginScreen = () => {
                 </button>
                 
                 <span>Aun no tienes cuenta? <Link to={'/register'}>Registrate</Link></span>
-                <br/>
                 <Link to={'/forgot-password'}>Olvide mi contraseña</Link>
             </form>
-        </div>
+        </main>
     )
 }
 
