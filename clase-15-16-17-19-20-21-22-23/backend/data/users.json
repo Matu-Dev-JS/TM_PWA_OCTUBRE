@@ -1,0 +1,41 @@
+{
+    "id_counter": 6,
+    "users": [
+        {
+            "name": "Pepe",
+            "email": "pepe@gmail.com",
+            "password": "pepe123",
+            "id": 1
+        },
+        {
+            "name": "Pepe",
+            "email": "pepe@gmail.com",
+            "password": "pepe123",
+            "id": 2
+        },
+        {
+            "name": "Pepe",
+            "email": "pepe@gmail.com",
+            "password": "pepe123",
+            "id": 3
+        },
+        {
+            "name": "Pepe",
+            "email": "pepe@gmail.com",
+            "password": "pepe123",
+            "id": 4
+        },
+        {
+            "name": "Pepe",
+            "email": "pepe@gmail.com",
+            "password": "pepe123",
+            "id": 5
+        },
+        {
+            "name": "Pepe",
+            "email": "pepe@gmail.com",
+            "password": "pepe123",
+            "id": 6
+        }
+    ]
+}
