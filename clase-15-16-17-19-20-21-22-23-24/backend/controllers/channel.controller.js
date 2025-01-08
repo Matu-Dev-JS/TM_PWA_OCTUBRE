@@ -104,3 +104,37 @@ export const sendMessageController = async (req, res) =>{
     }
 
 }
+
+
+export const getMessageFromChannelController = async (req, res) =>{
+    try{
+        const {channel_id, workspace_id} = req.params
+        const channel_selected = await Channel.findById(channel_id)
+        if(!channel_selected){
+            return res.json({
+                ok: false,
+                message: 'Channel not found',
+                status: 404
+            })
+        }
+
+        const messages = await Message.find({channel: channel_id})
+        .populate('sender', 'username')
+        return res.json({
+            ok:true,
+            status: 200,
+            message: 'Messages list',
+            data: {
+                messages
+            }
+        })
+    }
+    catch(error){
+        console.error(error)
+        return res.json({
+            ok:false,
+            message: "Internal server error",
+            status: 500,
+        })
+    }
+}

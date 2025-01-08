@@ -20,7 +20,8 @@ const LoginScreen = () => {
                 body: JSON.stringify(form_state)
             })
             const data = await response.json()
-            console.log(data)
+
+            sessionStorage.setItem('access_token', data.data.access_token)
         }
         catch(error){
             console.error("Error al loguear", error)
