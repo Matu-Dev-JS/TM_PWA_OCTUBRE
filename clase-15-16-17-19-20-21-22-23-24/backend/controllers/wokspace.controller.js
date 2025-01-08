@@ -29,7 +29,7 @@ export const createWorkspaceController = async (req, res) =>{
     }
 }
 
-const inviteUserToWorkspace = async (req, res) =>{
+export const inviteUserToWorkspaceController = async (req, res) =>{
     try{
         const {id} = req.user
         const {workspace_id} = req.params
@@ -76,6 +76,33 @@ const inviteUserToWorkspace = async (req, res) =>{
             message:'User invited successfully',
             data: {
                 workspace_selected
+            }
+        })
+    }
+    catch(error){
+        console.error(error)
+        return res.json({
+            ok:false,
+            message: "Internal server error",
+            status: 500,
+        })
+    }
+}
+
+export const getWorkspacesController = async (req, res) =>{
+    try{
+        const {id} = req.user
+
+        const workspaces = await Workspace.find({members: id})
+        .populate('members', 'username email')
+        .populate('owner', 'username')
+
+        res.json({
+            status: 200,
+            ok: true,
+            message: 'Workspaces',
+            data: {
+                workspaces
             }
         })
     }

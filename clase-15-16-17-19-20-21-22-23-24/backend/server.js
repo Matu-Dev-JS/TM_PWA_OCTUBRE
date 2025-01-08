@@ -36,6 +36,7 @@ app.use(express.json())
 
 import statusRoute from './routes/status.route.js'
 import authRouter from './routes/auth.route.js'
+import channelRouter from './routes/channel.route.js'
 import { sendMail } from './utils/mail.util.js'
 import workspaceRouter from './routes/workspace.route.js'
 
@@ -46,6 +47,8 @@ app.use('/api/status', statusRoute)
 app.use('/api/auth', authRouter)
 
 app.use('/api/workspace', workspaceRouter)
+
+app.use('/api/channel', channelRouter)
 
 app.listen(PORT, () =>{
     console.log(`El servidor se esta ejecutando en http://localhost:${PORT}`)

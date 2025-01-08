@@ -51,3 +51,28 @@ req.user el id del usuario
 Vamos a buscar si existe ese workspace y verficaremos si el id del usuario que intenta invitar el el mismo que el owner del workspace seleccionado
 
 Buscar a ese usuario x email y lo agregaremos como miembro al workspace (Almenos que ya este unido)
+
+
+
+Soy un usuario X y quiero ver todos los workspace a los que pertezco
+
+GET /api/workspaces
+
+Vamos a devolver todos los workspace en los que el user es miembro
+
+
+Crear un canal
+POST /api/channels/:workspace_id
+body: {
+    name: "general"
+}
+
+Enviar un mensaje
+POST /api/channels/:workspace_id/:channel_id/message
+body: {
+    content: "hola a todos"
+}
+
+Obtener lista de mensajes de un canal
+GET /api/channels/:workspace_id/:channel_id
+Debe devolver la lista de mensajes de ese canal
