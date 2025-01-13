@@ -106,7 +106,7 @@ export const sendMessageController = async (req, res) =>{
 }
 
 
-export const getMessageFromChannelController = async (req, res) =>{
+export const getMessagesFromChannelController = async (req, res) =>{
     try{
         const {channel_id, workspace_id} = req.params
         const channel_selected = await Channel.findById(channel_id)

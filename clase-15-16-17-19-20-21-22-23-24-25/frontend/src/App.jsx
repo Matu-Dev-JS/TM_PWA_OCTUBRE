@@ -8,6 +8,7 @@ import ForgotPasswordScreen from './screens/ForgotPasswordScreen'
 import ResetPasswordScreen from './screens/ResetPasswordScreen'
 import './App.css'
 import ProtectedRoute from './Components/ProtectedRoute'
+import HomeScreen from './screens/HomeScreen'
 
 
 
@@ -23,7 +24,7 @@ const App = () => {
         <Route path='/forgot-password' element={<ForgotPasswordScreen/>}/>
         <Route path='/reset-password' element={<ResetPasswordScreen/>} />
         <Route element={<ProtectedRoute/>} >
-          
+          <Route path='/home' element={<HomeScreen/>}/>
         </Route>
         
       </Routes>

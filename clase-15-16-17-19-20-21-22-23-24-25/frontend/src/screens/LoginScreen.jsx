@@ -1,15 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import useForm from '../hooks/useForm'
 import ENVIROMENT from '../utils/constants/enviroment'
-import { Link } from 'react-router-dom'
-
+import { Link, useNavigate} from 'react-router-dom'
+import { AuthContext } from '../Context/AuthContext'
 const LoginScreen = () => {
+
+    const {login, isAuthenticatedState} = useContext(AuthContext)
+    console.log('Authenticated:', isAuthenticatedState)
+    const navigate = useNavigate()
     const {form_state, handleChangeInput} = useForm({email:'', password: ''})
     const url = new URLSearchParams(window.location.search)
     if(url.get('verified')){
         alert('Cuenta verificada')
     }
     const handleSubmitForm = async (event) =>{
+       
         try{
             event.preventDefault()
             const response = await fetch(ENVIROMENT.API_URL + '/api/auth/login', {
@@ -21,7 +26,8 @@ const LoginScreen = () => {
             })
             const data = await response.json()
 
-            sessionStorage.setItem('access_token', data.data.access_token)
+            login(data.data.access_token)
+            navigate('/home')
         }
         catch(error){
             console.error("Error al loguear", error)

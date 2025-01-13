@@ -43,6 +43,7 @@ export const inviteUserToWorkspaceController = async (req, res) =>{
                 status: 404
             })
         }
+        //Solo el dueño del workspace puede invitar a otros
         if(!workspace_selected.owner.equals(id)){
             return res.json({
                 ok: false,
