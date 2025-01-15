@@ -1,15 +1,20 @@
+import e from "cors"
 import User from "../models/User.model.js"
 import Workspace from "../models/Workspace.model.js"
+import WorkspaceRepository from "../repository/workspaces.repository.js"
 
 export const createWorkspaceController = async (req, res) =>{
     try{
         const {name} = req.body
         const {id} = req.user
-        const new_workspace = await Workspace.create({
-            name,
-            owner: id,
-            members: [id] //Determino que el creador de el workspace sea miembro de el workspace
-        })
+        const new_workspace = await WorkspaceRepository.createWorkspace(
+            {
+                name,
+                id
+            }
+        )
+        
+        
         res.json({
             ok: true, 
             message: 'Workspace created',
@@ -35,7 +40,7 @@ export const inviteUserToWorkspaceController = async (req, res) =>{
         const {workspace_id} = req.params
         const {email} = req.body
 
-        const workspace_selected = await Workspace.findById(workspace_id)
+        const workspace_selected = await WorkspaceRepository.findWorkspaceById(workspace_id)
         if(!workspace_selected){
             return res.json({
                 ok: false,
@@ -60,25 +65,26 @@ export const inviteUserToWorkspaceController = async (req, res) =>{
             })
         }
         //si el user_invited._id no esta en el workspace_selected.members
-        
-        if(workspace_selected.members.includes(user_invited._id)){
+        try{
+            const workspace_modified = await WorkspaceRepository.addMemberToWorkspace(workspace_id, user_invited._id)
             return res.json({
-                ok: false,
-                message: 'User already is a member',
-                status: 200
+                ok: true,
+                status: 201,
+                message:'User invited successfully',
+                data: {
+                    workspace_selected: workspace_modified
+                }
             })
         }
-
-        workspace_selected.members.push(user_invited._id)
-        await workspace_selected.save()
-        return res.json({
-            ok: true,
-            status: 201,
-            message:'User invited successfully',
-            data: {
-                workspace_selected
-            }
-        })
+        catch(error){
+            return res.json({
+                ok: true,
+                status: error.status,
+                message: error.message
+            })
+        }
+        
+        
     }
     catch(error){
         console.error(error)
