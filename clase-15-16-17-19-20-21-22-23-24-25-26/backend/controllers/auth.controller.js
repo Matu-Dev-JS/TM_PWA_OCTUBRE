@@ -5,6 +5,7 @@ import ENVIROMENT from '../config/enviroment.js'
 import User from '../models/User.model.js'
 import { sendMail } from '../utils/mail.util.js'
 import bcrypt from 'bcrypt'
+import UserRepository from '../repository/user.repository.js'
 
 
 const QUERY = {
@@ -42,7 +43,7 @@ export const registerController =  async (request, response) => {
 
         //validamos estos datos (Queda de tarea)
 
-        const user_found = await findUserByEmail(email)
+        const user_found = await UserRepository.findUserByEmail(email)
 
         //Validar que el usuario con ese email sea nuevo (es decir no exista)
         if(user_found){
@@ -70,14 +71,7 @@ export const registerController =  async (request, response) => {
             }
         )
         const password_hash = await bcrypt.hash(password, 10)
-        const new_user = await createUser(
-            {
-                username: username, 
-                email, 
-                password: password_hash, 
-                verificationToken
-            }
-        )
+        const new_user = await UserRepository.createUser({username, email, password, verificationToken})
         response.json({
             ok: true,
             status: 201,
@@ -106,15 +100,14 @@ export const verifyEmailController = async (req, res) =>{
 
         }
         const payload = jwt.verify(verification_token, ENVIROMENT.SECRET_KEY_JWT)
-        const user_to_verify = await findUserByEmail(payload.email)
+        const user_to_verify = await UserRepository.findUserByEmail(payload.email)
         if(!user_to_verify){
             return res.redirect(`${ENVIROMENT.URL_FRONTEND}/error?error=REQUEST_EMAIL_VERIFY_TOKEN`)
         }
         if(user_to_verify.verificationToken !== verification_token){
             return res.redirect(`${ENVIROMENT.URL_FRONTEND}/error?error=RESEND_VERIFY_TOKEN`)
         }
-        user_to_verify.verified = true
-        await user_to_verify.save()
+        await UserRepository.verifyUser(user_to_verify._id)
         return res.redirect(`${ENVIROMENT.URL_FRONTEND}/login?verified=true`)
     }
     catch(error){
@@ -161,7 +154,7 @@ export const loginController =  async (req, res) => {
             });
         }
 
-        const user_found = await findUserByEmail(email)
+        const user_found = await UserRepository.findUserByEmail(email)
 
         if (!user_found) {
 
@@ -221,7 +214,7 @@ export const forgotPasswordController = async (req, res) =>{
     try{
         console.log(req.body)
         const {email} = req.body
-        const user_found = await User.findOne({email})
+        const user_found = await UserRepository.findUserByEmail(email)
         if(!user_found){
             return res.json({
                 ok: false,
@@ -264,7 +257,7 @@ export const resetPasswordController = async (req, res) =>{
         const {password} = req.body
 
         const {email} = jwt.verify(reset_token, ENVIROMENT.SECRET_KEY_JWT)
-        const user_found = await User.findOne({email})
+        const user_found = await UserRepository.findUserByEmail(email)
         const password_hash = await bcrypt.hash(password, 10)
 
         user_found.password = password_hash
