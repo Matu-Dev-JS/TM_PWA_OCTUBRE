@@ -9,7 +9,13 @@ const ENVIROMENT = {
     SECRET_KEY_JWT: process.env.JWT_SECRET,
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
     EMAIL_USERNAME: process.env.EMAIL_USERNAME,
-    URL_FRONTEND: `http://localhost:5173`
+    URL_FRONTEND: `http://localhost:5173`,
+    MYSQL: {
+        PASSWORD: process.env.MYSQL_PASSWORD,
+        HOST: process.env.MYSQL_HOST,
+        DB_NAME: process.env.MYSQL_DB_NAME,
+        USERNAME: process.env.MYSQL_USERNAME
+    }
 }
 
 export default ENVIROMENT

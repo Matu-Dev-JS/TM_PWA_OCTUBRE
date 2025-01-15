@@ -1,6 +1,9 @@
+import pool from "../config/mysql.config.js";
 import User from "../models/User.model.js";
 
 class UserRepository{
+    /* 
+    MONGO_DB
     async createUser ({username, email, password, verificationToken}){
         const nuevo_usuario = new User({
             username,
@@ -10,6 +13,23 @@ class UserRepository{
             modifiedAt: null
         })
         return await nuevo_usuario.save()
+    } 
+    */
+    //MYSQL
+    async createUser({username, email, password, verificationToken}){
+        const queryStr =  `
+        INSERT INTO USERS (username, email, password, verificationToken)
+        VALUES (?, ?, ?, ?)
+        `
+        const [result] = await pool.execute(
+            queryStr,
+            [username, email, password, verificationToken]
+        )
+        return {
+            _id: result.insertId,
+            username, 
+            email
+        }
     }
     async findUserByEmail (email){
         return await User.findOne({email: email})
