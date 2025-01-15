@@ -1,7 +1,9 @@
-import e from "cors"
+
 import User from "../models/User.model.js"
 import Workspace from "../models/Workspace.model.js"
 import WorkspaceRepository from "../repository/workspaces.repository.js"
+import UserRepository from "../repository/user.repository.js"
+import { ServerError } from "../utils/errors.util.js"
 
 export const createWorkspaceController = async (req, res) =>{
     try{
@@ -40,54 +42,33 @@ export const inviteUserToWorkspaceController = async (req, res) =>{
         const {workspace_id} = req.params
         const {email} = req.body
 
-        const workspace_selected = await WorkspaceRepository.findWorkspaceById(workspace_id)
-        if(!workspace_selected){
-            return res.json({
-                ok: false,
-                message: 'Workspace not found',
-                status: 404
-            })
-        }
-        //Solo el dueño del workspace puede invitar a otros
-        if(!workspace_selected.owner.equals(id)){
-            return res.json({
-                ok: false,
-                message: 'Forbidden',
-                status: 403
-            })
-        }
-        const user_invited = await User.findOne({email})
-        if(!user_invited){
-            return res.json({
-                status: 404,
-                message: 'User not found',
-                ok: false
-            })
-        }
         //si el user_invited._id no esta en el workspace_selected.members
-        try{
-            const workspace_modified = await WorkspaceRepository.addMemberToWorkspace(workspace_id, user_invited._id)
-            return res.json({
-                ok: true,
-                status: 201,
-                message:'User invited successfully',
-                data: {
-                    workspace_selected: workspace_modified
-                }
-            })
-        }
-        catch(error){
-            return res.json({
-                ok: true,
-                status: error.status,
-                message: error.message
-            })
-        }
         
-        
+        const user_invited = await UserRepository.findUserByEmail(email)
+        if(!user_invited){
+            throw new ServerError('User not found', 404)
+        }
+        const workspace_modified = await WorkspaceRepository.addMemberToWorkspace(workspace_id, user_invited._id)
+        return res.json({
+            ok: true,
+            status: 201,
+            message:'User invited successfully',
+            data: {
+                workspace_selected: workspace_modified
+            }
+        })
     }
     catch(error){
         console.error(error)
+        if(error.status){
+            return res.json(
+                {
+                    ok: false,
+                    message: error.message,
+                    status: error.status
+                }
+            )
+        }
         return res.json({
             ok:false,
             message: "Internal server error",
@@ -100,9 +81,7 @@ export const getWorkspacesController = async (req, res) =>{
     try{
         const {id} = req.user
 
-        const workspaces = await Workspace.find({members: id})
-        .populate('members', 'username email')
-        .populate('owner', 'username')
+        const workspaces = await WorkspaceRepository.getAllWorkspacesByMemberId(id)
 
         res.json({
             status: 200,
