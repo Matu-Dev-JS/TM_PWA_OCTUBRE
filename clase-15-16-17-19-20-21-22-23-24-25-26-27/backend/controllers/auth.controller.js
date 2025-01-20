@@ -34,6 +34,7 @@ const createUser = async ({username, email, password, verificationToken}) =>{
 }
 
 
+
 //Modificar/Migrar el controlador de registro para usar MongoDB (Ya no mas filesystem)
 
 export const registerController =  async (request, response) => {
@@ -71,7 +72,7 @@ export const registerController =  async (request, response) => {
             }
         )
         const password_hash = await bcrypt.hash(password, 10)
-        const new_user = await UserRepository.createUser({username, email, password, verificationToken})
+        const new_user = await UserRepository.createUser({username, email, password: password_hash, verificationToken})
         response.json({
             ok: true,
             status: 201,
@@ -155,7 +156,7 @@ export const loginController =  async (req, res) => {
         }
 
         const user_found = await UserRepository.findUserByEmail(email)
-
+        console.log(user_found)
         if (!user_found) {
 
             return res.json({
@@ -176,7 +177,7 @@ export const loginController =  async (req, res) => {
 
         //Quiero transformar al user a un token
         const user_info =  {
-            id: user_found.id,
+            id: user_found._id,
             name: user_found.name,
             email: user_found.email,
         }
@@ -191,7 +192,7 @@ export const loginController =  async (req, res) => {
             message: "Logged in",
             data: {
                 user_info: {
-                    id: user_found.id,
+                    id: user_found._id,
                     name: user_found.name,
                     email: user_found.email,
                 },

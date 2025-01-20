@@ -79,6 +79,7 @@ export const inviteUserToWorkspaceController = async (req, res) =>{
 
 export const getWorkspacesController = async (req, res) =>{
     try{
+        console.log(req.user)
         const {id} = req.user
 
         const workspaces = await WorkspaceRepository.getAllWorkspacesByMemberId(id)
