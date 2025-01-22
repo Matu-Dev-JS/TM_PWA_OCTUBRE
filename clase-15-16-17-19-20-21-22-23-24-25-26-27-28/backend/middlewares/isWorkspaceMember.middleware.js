@@ -1,11 +1,13 @@
 import Workspace from "../models/Workspace.model.js"
+import workspacesRepository from "../repository/workspaces.repository.js"
 
 
 const isWorkspaceMemberMiddleware = async (req, res, next) =>{
     try{
         const {id} = req.user
         const {workspace_id} = req.params
-        const workspace_selected = await Workspace.findById(workspace_id)
+
+        const workspace_selected = await workspacesRepository.findWorkspaceById(workspace_id)
         if(!workspace_selected){
             return res.json({
                 status: 404,
@@ -13,7 +15,7 @@ const isWorkspaceMemberMiddleware = async (req, res, next) =>{
                 message: "Workspace not found"
             })
         }
-        if(!workspace_selected.members.includes(id)){
+        if(!workspacesRepository.isUserMemberOfWorkspace(id, workspace_id)){
             return res.json({
                 status: 403,
                 ok: false,

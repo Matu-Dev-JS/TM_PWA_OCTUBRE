@@ -24,16 +24,24 @@ const HomeScreen = () => {
                 {
                 workspace_loading
                 ? <h2>Cargando</h2>
-                : workspace_response.data.workspaces.map(workspace => {
-                    return (
-                        <div key={workspace._id}>
-                            <h3>{workspace.name}</h3>
-                            <Link to={`/workspace/${workspace._id}`}>Ir al workspace</Link>
-                        </div>
-                    )
-                })
+                : (
+                    workspace_response.data.workspaces.length ?  
+                    workspace_response.data.workspaces.map(workspace => {
+                        return (
+                            <div key={workspace._id}>
+                                <h3>{workspace.name}</h3>
+                                <Link to={`/workspace/${workspace._id}`}>Ir al workspace</Link>
+                            </div>
+                        )
+                    })
+                    : <h3>Aun no creaste ningun espacio de trabajo!</h3>
+                )
                 }
             </div>
+        </div>
+        <div>
+            <span>Aun no tienes espacios de trabajo?</span>
+            <Link to='/workspace/new'>Crear un espacio de trabajo</Link>
         </div>
     </div>
   )

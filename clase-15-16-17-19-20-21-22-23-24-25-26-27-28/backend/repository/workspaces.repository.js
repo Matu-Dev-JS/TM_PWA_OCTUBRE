@@ -93,9 +93,33 @@ class WorkspaceRepository {
         WHERE workspace_members.user_id = ?
         `
         const [workspaces] = await pool.execute(selectWorkspacesQuery, [user_id])
-        return workspaces
+        
+        const workspacesAdapted = workspaces.map((workspace) => {
+            return {
+                _id: workspace.workspace_id,
+                name: workspace.workspace_name,
+                owner: {
+                    username: workspace.owner_username,
+                    email: workspace.owner_email
+                }
+            }
+        })
+        return workspacesAdapted
+    }
+    async isUserMemberOfWorkspace (user_id, workspace_id){
+        //Consultar la DB a la tabla workspace_members y traiga el registro que tenga user_id y workspace_id
+        const query = `SELECT * FROM workspace_members WHERE user_id = ? AND workspace_id = ?`
+        const [result] = await pool.execute(query, [user_id, workspace_id])
+        return Boolean(result.length)
     }
 }
-
+/* result = {
+    workspace_id: 1,
+    workspace_name: 'workspace 1',
+    owner_username: 'user 1',
+    owner_email: 'QzH8G@example.com',
+    workspace_members: []
+}
+ */
 
 export default new WorkspaceRepository()
