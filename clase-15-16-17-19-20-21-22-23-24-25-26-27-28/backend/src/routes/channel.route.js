@@ -1,5 +1,5 @@
 import express from 'express'
-import { authMiddleware } from '../middlewares/auth.middleware.js'
+import {authMiddleware} from '../middlewares/auth.middleware.js'
 import { createChannelController, getChannelsListController, getMessagesFromChannelController, sendMessageController } from '../controllers/channel.controller.js'
 import isWorkspaceMemberMiddleware from '../middlewares/isWorkspaceMember.middleware.js'
 
